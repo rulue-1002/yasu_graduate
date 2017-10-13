@@ -1,7 +1,5 @@
 package main;
 
-import java.math.BigDecimal;
-
 import main.service.ShapleyShubikPowerIndexService;
 
 public class WolframConverter {
@@ -10,8 +8,7 @@ public class WolframConverter {
 
 		System.out.println("------- wolfram converter start -------");
 		ShapleyShubikPowerIndexService service = new ShapleyShubikPowerIndexService();
-		BigDecimal result = service.calcSSPI();
-		System.out.println(result);
+		service.calcSSPI();
 		System.out.println("------- wolfram converter end -------");
 
 	}
