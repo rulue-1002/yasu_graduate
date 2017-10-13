@@ -1,4 +1,4 @@
-package graduate;
+package main.service;
 
 import java.math.BigDecimal;
 import java.util.AbstractMap;
@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
+
+import main.util.StringUtil;
 
 public class ShapleyShubikPowerIndexService {
 

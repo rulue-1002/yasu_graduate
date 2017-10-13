@@ -1,4 +1,4 @@
-package graduate;
+package main.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

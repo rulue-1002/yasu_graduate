@@ -1,6 +1,8 @@
-package graduate;
+package main;
 
 import java.math.BigDecimal;
+
+import main.service.ShapleyShubikPowerIndexService;
 
 public class WolframConverter {
 
