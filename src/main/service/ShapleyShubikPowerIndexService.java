@@ -1,5 +1,6 @@
 package main.service;
 
+import java.math.BigDecimal;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -18,10 +19,10 @@ public class ShapleyShubikPowerIndexService {
 	private Long[] wd;
 	private LinkedHashMap<Entry<Long,Long>, Long> cks;
 	private LinkedHashMap<Entry<Long,Long>, Long> dks;
-	private Long[] ss;
-	private Long[] bz;
-	private Long[] shapleyShubikArray;
-	private Long[] banzhafArray;
+	private BigDecimal[] ss;
+	private BigDecimal[] bz;
+	private BigDecimal[] shapleyShubikArray;
+	private BigDecimal[] banzhafArray;
 
 
 	public void calcSSPI () {
@@ -47,10 +48,10 @@ public class ShapleyShubikPowerIndexService {
 			}
 
 			wd = new Long[n.intValue()+1];
-			ss = new Long[n.intValue()+1];
-			bz = new Long[n.intValue()+1];
-			shapleyShubikArray = new Long[n.intValue()+1];
-			banzhafArray = new Long[n.intValue()+1];
+			ss = new BigDecimal[n.intValue()+1];
+			bz = new BigDecimal[n.intValue()+1];
+			shapleyShubikArray = new BigDecimal[n.intValue()+1];
+			banzhafArray = new BigDecimal[n.intValue()+1];
 			cks = new LinkedHashMap<Entry<Long,Long>, Long>();
 			dks = new LinkedHashMap<Entry<Long,Long>, Long>();
 			// L6:Do[...]{i,1,n}
@@ -111,37 +112,38 @@ public class ShapleyShubikPowerIndexService {
 				System.out.println("calced d[k,s]=" + dks);
 
 				// L17
-				ss[i] = Long.valueOf(0);
-				bz[i] = Long.valueOf(0);
+				ss[i] = new BigDecimal(0);
+				bz[i] = new BigDecimal(0);
 
 				Long factS = null;
 				Long factNS1 = null;
-				Long factN = null;
+				BigDecimal factN = null;
 				Long numerator = null;
-				Long devided = null;
+				BigDecimal devided = null;
 				// L18:Do[ss[i]=…
 				for (int k=q.intValue()-w[i].intValue(); k<=q-1; k++) {
 					for (int s=1; s<=n-1; s++) {
-						// s!
+						// s!:整数
 						factS = NumberUtil.calcFactorial(Long.valueOf(s));
-						// (n-s-1)!
+						// (n-s-1)!:整数
 						factNS1 = NumberUtil.calcFactorial(Long.valueOf(n-s-1));
-						// n!
-						factN = NumberUtil.calcFactorial(Long.valueOf(n));
+						// n!:整数
+						factN = new BigDecimal(NumberUtil.calcFactorial(Long.valueOf(n)));
 
-						// s!(n-s-1)!c[k,s]
+						// s!(n-s-1)!c[k,s]:整数
 						numerator = factS * factNS1 * cks.get(this.newEntry(Long.valueOf(k), Long.valueOf(s)));
 						// s!(n-s-1)!c[k,s]/n!
-						devided = numerator / factN;
+						// 小数点以下第５位まで必要とのことなので、BigDecimalで対応
+						// TODO:四捨五入させるとかは要確認。
+						devided = new BigDecimal(numerator).divide(factN,5,BigDecimal.ROUND_HALF_UP);
 
-						ss[i] = ss[i] + devided;
-						bz[i] = bz[i] + cks.get(this.newEntry(Long.valueOf(k), Long.valueOf(s)));
+						ss[i] = ss[i].add(devided);
+						bz[i] = bz[i].add(new BigDecimal(cks.get(this.newEntry(Long.valueOf(k), Long.valueOf(s)))));
 					}
 				}
 
-
-
-				bz[i] = bz[i] / Long.valueOf(new Double(Math.pow(2d,n.doubleValue()-1d)).longValue());
+				//bz[i]/2^n-1
+				bz[i] = bz[i].divide(new BigDecimal(Math.pow(2d,n.doubleValue()-1d)));
 			}
 
 			for (int i=1; i<=n; i++) {
